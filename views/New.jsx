@@ -8,6 +8,7 @@ class New extends React.Component {
                 airline: <input type="text" name="airline" /><br/>
                 flightNo: <input type="number" name="flightNo" /><br/>
                 departs: <input type="datetime-local" name="departs" /><br/>
+                a
                 <input type="submit" name="" value="Create Flight"/>
               </form>
           </div>);

@@ -4,10 +4,18 @@ const app = express()
 //instantiate port
 const port = 3000
 const Flight = require('./models/flights.js')
+const Destination = require('./models/destinations.js')
 const mongoose = require('mongoose');
-const database =require('./config/database.js')
 require('dotenv').config()
-//midware
+const mongoURI = process.env.MONGO_URI;
+const db = mongoose.connection;
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+//connection messages
+db.on("error", (err) => console.log(err.message + " is mongod not running?"));
+db.on("open", () => console.log("mongo connected: "));
+db.on("close", () => console.log("mongo disconnected"));
+
 app.use((req, res, next) => {
     console.log('I run for all routes');
     next();
@@ -22,7 +30,7 @@ app.engine('jsx', require('jsx-view-engine').createEngine());
 //Index
 app.get('/flights', (req, res)=>{
   Flight.find({}, (error, allFlights)=>{
-      res.render('flights/Index', {
+      res.render('Index', {
           flights: allFlights
       });
   });
@@ -35,11 +43,6 @@ app.get('/flights/new', (req, res) => {
 // Update
 // Create
 app.post('/flights/', (req, res)=>{
-  if(req.body.readyToEat === 'on'){ //if checked, req.body.readyToEat is set to 'on'
-      req.body.readyToEat = true;
-  } else { //if not checked, req.body.readyToEat is undefined
-      req.body.readyToEat = false;
-  }
   Flight.create(req.body, (error, createdFlight)=>{
       res.redirect('/flights');
   });
